@@ -17,6 +17,6 @@ after execution.
 
 Steps to execute :
 1. Clone a project to local machine and open in IntelliJ.
-2. Double click on OllionUITest.feature file. Then Right click on runner.java class to execute
+2. Go to Runner class. And play Run
 3. At the end of execution report will be generated. 
 4. Report path :=> html:target/JSONReports/report.html
