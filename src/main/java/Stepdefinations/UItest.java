@@ -25,7 +25,7 @@ public class UItest {
     public static Properties prop;
     public static WebDriverWait wait;
     String url;
-    @BeforeClass
+
     @io.cucumber.java.en.Given("user setup tests")
     public void Initialize(){
         try {
@@ -36,7 +36,6 @@ public class UItest {
             throw new RuntimeException(e);
         }
     }
-    @Test(priority = 1)
     @io.cucumber.java.en.And("user opens a web browser")
     public void userOpensAWebBrowser() throws IOException {
         String browserName = prop.getProperty("browser");
@@ -48,10 +47,11 @@ public class UItest {
         driver.manage().timeouts().pageLoadTimeout(TestUtil.PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(TestUtil.IMPLICIT_WAIT,TimeUnit.SECONDS);
         wait = new WebDriverWait(driver, Duration.ofSeconds(EXPLICIT_WAIT));
+        driver.manage().deleteAllCookies();
         url =prop.getProperty("url");
     }
 
-    @Test(priority = 2)
+
     @io.cucumber.java.en.And("Navigate to stackoverflow page")
     public void navigateToStackoverflowPage() {
         driver.get(url);
@@ -59,7 +59,7 @@ public class UItest {
         Assert.assertEquals("Stack Overflow - Where Developers Learn, Share, & Build Careers",title);
     }
 
-    @Test(priority = 3)
+
     @io.cucumber.java.en.When("User clicks on Questions")
     public void userClicksOnQuestions() throws Exception{
         try {
@@ -72,13 +72,13 @@ public class UItest {
         }
     }
 
-    @Test(priority = 4)
+
     @io.cucumber.java.en.And("User clicks on Users")
     public void userClicksOnUsers() {
         driver.findElement(By.xpath("//span[text()='Users']")).click();
     }
 
-    @Test(priority = 5)
+
     @io.cucumber.java.en.And("User clicks on Editors")
     public void userClicksOnEditors() throws Exception{
         try {
@@ -90,13 +90,37 @@ public class UItest {
         }
     }
 
-    @Test(priority = 6)
+
     @io.cucumber.java.en.Then("User click on page {int}")
     public void userClickOnPage(int pageNumber) throws NotFoundException,NoSuchElementException{
-        boolean isPageNumberDisplayed =driver.findElement(By.xpath("//a[text()='"+pageNumber+"']")).isDisplayed();
+        int defaultPage = 1;
+       int defaultPageNumber=1;
+        List<WebElement> isPageNumberPresnt = null;
+        if (pageNumber==defaultPage){
+            String defaultPageText=driver.findElement(By.xpath("//div[@class='s-pagination--item is-selected']")).getText();
+            defaultPageNumber = Integer.parseInt(defaultPageText);
+            isPageNumberPresnt=driver.findElements(By.xpath("//div[@class='s-pagination--item is-selected']"));
+        }
+        else {
+            isPageNumberPresnt = driver.findElements(By.xpath("//a[text()='"+pageNumber+"']"));
+
+        }
         try {
-            if (isPageNumberDisplayed) {
-                driver.findElement(By.xpath("//a[text()='" + pageNumber + "']")).click();
+            if(!isPageNumberPresnt.isEmpty())
+                {
+                    if (pageNumber==defaultPageNumber){
+                        System.out.println("You are navigated to page "+pageNumber);
+                        driver.findElement(By.xpath("//div[@class='s-pagination--item is-selected']")).click();
+                    }
+                    else {
+                        System.out.println("You are navigated to page "+pageNumber);
+                        driver.findElement(By.xpath("//a[text()='" + pageNumber + "']")).click();
+                    }
+            }
+            else
+            {
+                System.out.println("Page not found");
+                driver.quit();
             }
         }
         catch (NoSuchElementException e){
@@ -104,7 +128,7 @@ public class UItest {
         }
     }
 
-    @Test(priority = 7, dependsOnMethods = "userClickOnPage")
+
     @io.cucumber.java.en.And("User should get maximum number of edits per user")
     public void userShouldGetMaximumNumberOfEditsPerUser() throws Exception {
         try {
@@ -117,13 +141,13 @@ public class UItest {
                 allEdits[i] = dig;
             }
             int maxEdits = Arrays.stream(allEdits).max().getAsInt();
-            System.out.println("Max edits are " + maxEdits);
+            System.out.println("Max edits per user are " + maxEdits);
 
             names = driver.findElements(By.xpath("//div[contains(@class,'user-tags') and normalize-space(text())='" + maxEdits + " " + "edits']//..//div[@class='user-details']//a"));
             locations = driver.findElements(By.xpath("//div[contains(@class,'user-tags') and normalize-space(text())='" + maxEdits + " " + "edits']//..//div[@class='user-details']//span[@class='user-location']"));
 
             for (int i = 0; i < names.size(); i++) {
-                System.out.println(" UserName is " + names.get(i).getText() + " max edits are " + maxEdits + " and Location is " + locations.get(i).getText());
+                System.out.println( "UserName is " + names.get(i).getText() + " max edits are " + maxEdits + " and Location is " + locations.get(i).getText());
             }
         }
         catch (Exception e){
@@ -131,7 +155,6 @@ public class UItest {
         }
     }
 
-    @AfterClass
     @io.cucumber.java.en.And("User close the browser")
     public void userCloseTheBrowser() {
         driver.quit();
