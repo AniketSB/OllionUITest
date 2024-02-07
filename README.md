@@ -10,6 +10,7 @@ All dependencies are added in pom.xml
 
 To better understand functionality feature file is written for Happy and unhappy path.
 
+
 This framework is based on Cucumber, cucumber keywords are added and html report can be generated
 after execution.
 
@@ -18,3 +19,4 @@ Steps to execute :
 2. Go to Runner class. And play Run
 3. At the end of execution report will be generated. 
 4. Report path :=> html:target/JSONReports/report.html
+5. Screenshots :=> /target/Screenshot

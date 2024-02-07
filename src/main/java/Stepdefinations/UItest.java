@@ -1,15 +1,14 @@
 package Stepdefinations;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import util.TestUtil;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -25,6 +24,7 @@ public class UItest {
     public static Properties prop;
     public static WebDriverWait wait;
     String url;
+    File file;
 
     @io.cucumber.java.en.Given("user setup tests")
     public void Initialize(){
@@ -62,6 +62,7 @@ public class UItest {
 
     @io.cucumber.java.en.When("User clicks on Questions")
     public void userClicksOnQuestions() throws Exception{
+        file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
             driver.findElement(By.xpath("//a[@aria-controls='left-sidebar']")).click();
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='Questions']")));
@@ -70,6 +71,7 @@ public class UItest {
         catch (NoSuchElementException e){
             System.out.println(e.getStackTrace());
         }
+        FileUtils.copyFile(file, new File("target/Screenshot/Editors.png"), true);
     }
 
 
@@ -92,7 +94,8 @@ public class UItest {
 
 
     @io.cucumber.java.en.Then("User click on page {int}")
-    public void userClickOnPage(int pageNumber) throws NotFoundException,NoSuchElementException{
+    public void userClickOnPage(int pageNumber) throws NotFoundException, NoSuchElementException, IOException {
+        file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         int defaultPage = 1;
        int defaultPageNumber=1;
         List<WebElement> isPageNumberPresnt = null;
@@ -105,7 +108,9 @@ public class UItest {
             isPageNumberPresnt = driver.findElements(By.xpath("//a[text()='"+pageNumber+"']"));
 
         }
+        FileUtils.copyFile(file, new File("target/Screenshot/Users.png"), true);
         try {
+
             if(!isPageNumberPresnt.isEmpty())
                 {
                     if (pageNumber==defaultPageNumber){
