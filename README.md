@@ -8,8 +8,6 @@ NOTE : This project is build on mac machine. Please check compatibility on respe
 
 All dependencies are added in pom.xml
 
-@Test testNG annotation is used to write test cases. And execution priority has been set.
-
 To better understand functionality feature file is written for Happy and unhappy path.
 
 This framework is based on Cucumber, cucumber keywords are added and html report can be generated
